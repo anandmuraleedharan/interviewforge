@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3007",
     "build": "next build",
+    "test": "node test_interviewforge.mjs",
     "start": "next start -p 3007",
     "lint": "next lint"
   },
