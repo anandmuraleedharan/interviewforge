@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Sparkles, FileText, CheckCircle, AlertCircle, Download, Copy, RefreshCw } from "lucide-react";
+import { extractAndParseJSON } from "../lib/jsonHelper";
 
 export default function ATSResumeTailor() {
   const [jobDescription, setJobDescription] = useState("");
@@ -38,11 +39,11 @@ ${resumeText}`;
 
       const data = await res.json();
       if (data.result) {
-        const cleaned = data.result.replace(/```json|```/g, "").trim();
-        setAnalysis(JSON.parse(cleaned));
+        const parsed = extractAndParseJSON(data.result);
+        if (parsed) setAnalysis(parsed);
       }
     } catch (err) {
-      console.error(err);
+      console.error("ATS Tailor parsing error:", err);
     } finally {
       setLoading(false);
     }

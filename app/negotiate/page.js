@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { DollarSign, Sparkles, Printer, ShieldCheck, RefreshCw } from "lucide-react";
+import { extractAndParseJSON } from "../lib/jsonHelper";
 
 export default function SalaryNegotiationSandbox() {
   const [offerDetails, setOfferDetails] = useState({ base: "175000", targetRole: "Staff Data Engineer", targetLocation: "Remote (US)" });
@@ -41,11 +42,11 @@ Generate counter-offer negotiation scripts & 1-page interview cheat-sheet in JSO
 
       const data = await res.json();
       if (data.result) {
-        const cleaned = data.result.replace(/```json|```/g, "").trim();
-        setCounterScript(JSON.parse(cleaned));
+        const parsed = extractAndParseJSON(data.result);
+        if (parsed) setCounterScript(parsed);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Negotiation Sandbox parsing error:", err);
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Award, Sparkles, Copy, Check, RefreshCw } from "lucide-react";
+import { extractAndParseJSON } from "../lib/jsonHelper";
 
 export default function STARStoryBuilder() {
   const [rawStory, setRawStory] = useState("");
@@ -32,11 +33,11 @@ Return JSON strictly matching schema:
 
       const data = await res.json();
       if (data.result) {
-        const cleaned = data.result.replace(/```json|```/g, "").trim();
-        setStarResult(JSON.parse(cleaned));
+        const parsed = extractAndParseJSON(data.result);
+        if (parsed) setStarResult(parsed);
       }
     } catch (err) {
-      console.error(err);
+      console.error("STAR Story parsing error:", err);
     } finally {
       setLoading(false);
     }

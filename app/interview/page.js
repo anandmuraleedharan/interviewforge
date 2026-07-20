@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Mic, MicOff, Volume2, Sparkles, Send, Award, RefreshCw } from "lucide-react";
+import { extractAndParseJSON } from "../lib/jsonHelper";
 
 export default function AIMockInterviewer() {
   const [role, setRole] = useState("Data Engineer / Architect");
@@ -73,17 +74,17 @@ Provide feedback and the next question in JSON format matching schema:
 
       const data = await res.json();
       if (data.result) {
-        const cleaned = data.result.replace(/```json|```/g, "").trim();
-        const parsed = JSON.parse(cleaned);
-
-        setFeedback(parsed);
-        setHistory(prev => [...prev, { q: currentQuestion, a: userAnswer, score: parsed.score }]);
-        setCurrentQuestion(parsed.nextQuestion);
-        setUserAnswer("");
-        speakText(parsed.nextQuestion);
+        const parsed = extractAndParseJSON(data.result);
+        if (parsed) {
+          setFeedback(parsed);
+          setHistory(prev => [...prev, { q: currentQuestion, a: userAnswer, score: parsed.score }]);
+          setCurrentQuestion(parsed.nextQuestion || currentQuestion);
+          setUserAnswer("");
+          if (parsed.nextQuestion) speakText(parsed.nextQuestion);
+        }
       }
     } catch (err) {
-      console.error(err);
+      console.error("AI Mock Interviewer parsing error:", err);
     } finally {
       setLoading(false);
     }

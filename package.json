@@ -2,10 +2,12 @@
   "name": "interviewforge",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev -p 3007",
     "build": "next build",
-    "test": "node test_interviewforge.mjs",
+    "test": "node test_all_interview_features.mjs",
+    "test:e2e": "playwright test e2e/interviewforge_visual.spec.js",
     "start": "next start -p 3007",
     "lint": "next lint"
   },
